@@ -32,7 +32,9 @@ export default class PostsService {
 
   async updatePost(id:Number, post:UpdatePostDto){
     await this.postsRepository.update(post, id)
-    const updatedPost = await this.postsRepository.findOne(id);
+    const updatedPost = await this.postsRepository.findOne(
+      {where: {id: id}}
+    );
     if (updatedPost){
       return updatedPost;
     }
@@ -43,7 +45,6 @@ export default class PostsService {
     const deleteResponse = await this.postsRepository.delete(id)
     if (!deleteResponse.affected) {
       throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
-    }
     }
   }
 }
