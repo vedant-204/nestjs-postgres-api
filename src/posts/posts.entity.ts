@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 class Post {
   @PrimaryGeneratedColumn()
-  public id: Number;
+  public id: number;
  
   @Column()
   public title: string;
