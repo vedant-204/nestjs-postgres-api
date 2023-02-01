@@ -1,4 +1,6 @@
 import { HttpStatus, HttpException, Injectable } from '@nestjs/common';
+import { RegisterDto } from './dto/register.dto.ts';
+import
 
 @Injectable()
 export class AuthenticationService {
@@ -18,7 +20,27 @@ export class AuthenticationService {
     } catch(error){
       if (error?.code === PostgresErrorCode.UniqueViolation) {
         throw new HttpException("User with that email already exists", HttpStatus.BAD_REQUEST);
-      } throw new HttpsException("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+      } throw new HttpException("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  public async getAuthenticatedUser(email: string, plainTextPassword: string){
+    try {
+      const user = await this.userService.getByEmail(email);
+      await this.verifyPassword(plainTextPassword, user.password);
+      user.password = undefined;
+      return user;
+    } catch (error)d {
+      throw new HttpException("Wrong Credentials", HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  private async verifyPassword(plainTextPassword: string, hashedPassword: string){
+    const isPasswordMatching = await bcrypt.compare(
+      plainTextPassword, hashedPassword
+    );
+    if (!isPasswordMatching) {
+      throw new HttpException("Wrong Credentials", HttpStatus.BAD_REQUEST);
     }
   }
 }
