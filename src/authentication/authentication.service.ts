@@ -1,11 +1,12 @@
 import { HttpStatus, HttpException, Injectable } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto.ts';
-import
 
 @Injectable()
 export class AuthenticationService {
   constructor(
-    private readonly userService: userService
+    private readonly userService: userService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService
   ) {}
 
   public async register(registrationData: RegisterDto){
@@ -42,5 +43,14 @@ export class AuthenticationService {
     if (!isPasswordMatching) {
       throw new HttpException("Wrong Credentials", HttpStatus.BAD_REQUEST);
     }
+  }
+  
+  public getCookieWithJwtToken(userId: number){
+    const payload: TokenPayload = { userId };
+    const token = this.jwtService.sign(payload);
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_EXPIRATION_TIME')}`;
+  }
+   public getCookieForLogout(){
+    return `Authentication=; HttpStatus; Path=/; Max-Age=0`;
   }
 }
