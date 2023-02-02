@@ -1,9 +1,12 @@
 import { HttpStatus, HttpException, Injectable } from '@nestjs/common';
+import { RegisterDto } from './dto/register.dto.ts';
 
 @Injectable()
 export class AuthenticationService {
   constructor(
-    private readonly userService: userService
+    private readonly userService: userService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService
   ) {}
 
   public async register(registrationData: RegisterDto){
@@ -18,7 +21,36 @@ export class AuthenticationService {
     } catch(error){
       if (error?.code === PostgresErrorCode.UniqueViolation) {
         throw new HttpException("User with that email already exists", HttpStatus.BAD_REQUEST);
-      } throw new HttpsException("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+      } throw new HttpException("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  public async getAuthenticatedUser(email: string, plainTextPassword: string){
+    try {
+      const user = await this.userService.getByEmail(email);
+      await this.verifyPassword(plainTextPassword, user.password);
+      user.password = undefined;
+      return user;
+    } catch (error)d {
+      throw new HttpException("Wrong Credentials", HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  private async verifyPassword(plainTextPassword: string, hashedPassword: string){
+    const isPasswordMatching = await bcrypt.compare(
+      plainTextPassword, hashedPassword
+    );
+    if (!isPasswordMatching) {
+      throw new HttpException("Wrong Credentials", HttpStatus.BAD_REQUEST);
+    }
+  }
+  
+  public getCookieWithJwtToken(userId: number){
+    const payload: TokenPayload = { userId };
+    const token = this.jwtService.sign(payload);
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_EXPIRATION_TIME')}`;
+  }
+   public getCookieForLogout(){
+    return `Authentication=; HttpStatus; Path=/; Max-Age=0`;
   }
 }
