@@ -14,7 +14,7 @@ export default class PostsController {
   }
 
   @Get(':id')
-  getPostById(@Param('id') id: string) {
+  getPostById(@Param(){ id }: FindOneParams) {
     return this.postsService.getPostById(Number(id));
   }
   
