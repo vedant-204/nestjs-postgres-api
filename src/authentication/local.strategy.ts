@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import user from '../users/users.entity';
 
-@Injectable
+@Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy){
   constructor(private authenticationService: AuthenticationService){
     super({
@@ -13,6 +13,6 @@ export class LocalStrategy extends PassportStrategy(Strategy){
   }
   
   async validate(email: string, password: string): Promise<user> {
-    return this.authenticationService.getAuthenitcatedUser(email, password);
+    return this.authenticationService.getAuthenticatedUser(email, password);
   }
 }

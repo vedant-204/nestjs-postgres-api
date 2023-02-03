@@ -1,6 +1,6 @@
-import { HttpStatus, HttpsException, Injectable } from '@nestjs/common';
+import { HttpStatus, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository }from '@nestjs/typeorm';
-import { Repository } from 'tyeporm'
+import { Repository } from 'typeorm'
 import { CreateUserDto } from './dto/createUser.dto'
 import user from './users.entity'
 
@@ -17,7 +17,7 @@ export class UsersService {
     })
     if (user) {
       return user
-    } throw new HttpsException('User with this id does not exist', HttpStatus.NOT_FOUND);
+    } throw new HttpException('User with this id does not exist', HttpStatus.NOT_FOUND);
   }
   
   async getByEmail(email: string){
@@ -26,7 +26,7 @@ export class UsersService {
     })
     if (user) {
       return user;
-    } throw new HttpsException('User with this email does not exist', HttpStatus.NOT_FOUND);
+    } throw new HttpException('User with this email does not exist', HttpStatus.NOT_FOUND);
   }
 
   async create(userData: CreateUserDto){
