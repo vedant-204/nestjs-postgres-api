@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Delete, Post, Param, Put } from '@nestjs/common';
+import { Body, Controller, Get, Delete, Post, Param, Put, UseGuards } from '@nestjs/common';
 import PostsService from './posts.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
-import { JwtAutheticationGuard } from '../authentication/jwt-authentication.guard.ts'
+import JwtAuthenticationGuard from '../authentication/jwt-authentication.guard'
 
 @Controller('posts')
 export default class PostsController {
@@ -19,13 +19,13 @@ export default class PostsController {
   }
   
   @Post()
-  @UseGuards(JwtAutheticationGuard)  
+  @UseGuards(JwtAuthenticationGuard)  
     async createPost(@Body() post: CreatePostDto) {
     return this.postsService.createPost(post);
   }
 
   @Put(':id')
-  @UseGuards(JwtAutheticationGuard)  
+  @UseGuards(JwtAuthenticationGuard)  
   async replacePost(@Param('id') id: string, @Body() post: UpdatePostDto) {
     return this.postsService.updatePost(Number(id), post);
   }

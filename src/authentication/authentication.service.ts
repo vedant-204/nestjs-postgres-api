@@ -1,10 +1,15 @@
 import { HttpStatus, HttpException, Injectable } from '@nestjs/common';
-import { RegisterDto } from './dto/register.dto.ts';
+import { RegisterDto } from './dto/register.dto';
+import * as bcrypt from 'bcrypt';
+import { TokenPayload }from './tokenPayload.interface';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { UsersService }from '../users/users.service'
 
 @Injectable()
 export class AuthenticationService {
   constructor(
-    private readonly userService: userService,
+    private readonly userService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService
   ) {}
@@ -31,7 +36,7 @@ export class AuthenticationService {
       await this.verifyPassword(plainTextPassword, user.password);
       user.password = undefined;
       return user;
-    } catch (error)d {
+    } catch (error) {
       throw new HttpException("Wrong Credentials", HttpStatus.BAD_REQUEST);
     }
   }
