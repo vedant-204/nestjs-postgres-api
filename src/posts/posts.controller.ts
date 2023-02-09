@@ -3,6 +3,7 @@ import PostsService from './posts.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
 import JwtAuthenticationGuard from '../authentication/jwt-authentication.guard'
+import FindOneParams from '../utils/findOneParams';
 
 @Controller('posts')
 export default class PostsController {
