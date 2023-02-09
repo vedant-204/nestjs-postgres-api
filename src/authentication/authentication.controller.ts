@@ -3,12 +3,9 @@ import { AuthenticationService } from './authentication.service';
 import RegisterDto from './dto/register.dto';
 import RequestWithUser from './requestWithUser.interface';
 import { LocalAuthenticationGuard } from './localAuthentication.guard';
-import JwtAuthenticationGuard from './jwt-authentication.guard'
+import JwtAuthenticationGuard from './jwt-authentication.guard';
 
 @Controller('authentication')
-@SerializeOptions({
-  strategy: 'excludeAll'
-})
 export class AuthenticationController {
   constructor(
     private readonly authenticationService: AuthenticationService
