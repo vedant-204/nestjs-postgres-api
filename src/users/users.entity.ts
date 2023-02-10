@@ -1,5 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Expose } from 'class-transformer';
+import { Column, Entity, OneToOne, OneToMany, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
+import Address from './address.entity';
+import Posts from '../posts/posts.entity';
  
 @Entity()
 class user {
@@ -7,15 +9,24 @@ class user {
   public id?: number;
  
   @Column({ unique: true })
-  @Expose()
   public email: string;
  
   @Column()
-  @Expose()
   public name: string;
 
   @Column()
+  @Exclude()
   public password: string;
+
+  @OneToOne(() => Address, {
+    eager: true,
+    cascade: true
+  })
+  @JoinColumn()
+  public address: Address;
+  
+  @OneToMany(() => Posts, (post: Posts) => post.author)
+  public posts?: Posts[];
 }
  
 export default user;

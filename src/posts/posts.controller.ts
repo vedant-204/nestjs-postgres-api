@@ -21,7 +21,7 @@ export default class PostsController {
   
   @Post()
   @UseGuards(JwtAuthenticationGuard)  
-    async createPost(@Body() post: CreatePostDto) {
+  async createPost(@Body() post: CreatePostDto) {
     return this.postsService.createPost(post);
   }
 
