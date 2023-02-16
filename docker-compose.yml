@@ -26,17 +26,6 @@ services:
     networks:
       - postgres
 
-  app:
-    container_name: post-api
-    build:
-      - context: .
-    networks:
-      - postgres
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
-
 networks:
   postgres:
     driver: bridge
