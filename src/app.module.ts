@@ -11,7 +11,7 @@ import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter'
 import { APP_FILTER } from '@nestjs/core'
 
 @Module({
-  imports: [PostsModule, 
+  imports: [PostsModule,
     ConfigModule.forRoot({
       validationSchema: Joi.object({
         POSTGRES_HOST: Joi.string().required(),
@@ -21,7 +21,11 @@ import { APP_FILTER } from '@nestjs/core'
         POSTGRES_DB: Joi.string().required(),
         PORT: Joi.number(),
         JWT_SECRET: Joi.string().required(),
-        JWT_EXPIRATION_TIME: Joi.string().required()
+        JWT_EXPIRATION_TIME: Joi.string().required(),
+        JWT_ACCESS_TOKEN_SECRET: Joi.string().required(),
+        JWT_ACCESS_TOEKN_EXPIRATION_TIME: Joi.string().required(),
+        JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
+        JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required()
       }),
     }), DatabaseModule, UsersModule, AuthenticationModule],
   controllers: [AppController],
@@ -33,4 +37,4 @@ import { APP_FILTER } from '@nestjs/core'
     }
   ],
 })
-export class AppModule {}
+export class AppModule { }

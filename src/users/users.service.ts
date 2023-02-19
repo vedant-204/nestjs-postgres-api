@@ -1,35 +1,55 @@
 import { HttpStatus, HttpException, Injectable } from '@nestjs/common';
-import { InjectRepository }from '@nestjs/typeorm';
-import { Repository } from 'typeorm'
-import { CreateUserDto } from './dto/createUser.dto'
-import user from './users.entity'
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateUserDto } from './dto/createUser.dto';
+import user from './users.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(user)
     private userRepository: Repository<user>
-  ) {}
+  ) { }
 
-  async getById(id: number){
+  async setCurrentRefreshToken(refreshToken: string, userId: number) {
+    const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+    await this.userRepository.update(userId, {
+      currentHashedRefreshToken
+    });
+  }
+
+  async getUserIfRefreshTokenMatches(refreshToken: string, userId: number) {
+    const user = await this.getById(userId);
+
+    const isRefreshTokenMatching = await bcypt.compare(
+      refreshToken,
+      user.currentHashedRefreshToken
+    );
+    if (isRefreshTokenMatching) {
+      return user;
+    }
+  }
+
+  async getById(id: number) {
     const user = await this.userRepository.findOne({
-      where: {id,}
+      where: { id, }
     })
     if (user) {
       return user
     } throw new HttpException('User with this id does not exist', HttpStatus.NOT_FOUND);
   }
-  
-  async getByEmail(email: string){
+
+  async getByEmail(email: string) {
     const user = await this.userRepository.findOne({
-      where: {email,}
+      where: { email, }
     })
     if (user) {
       return user;
     } throw new HttpException('User with this email does not exist', HttpStatus.NOT_FOUND);
   }
 
-  async create(userData: CreateUserDto){
+  async create(userData: CreateUserDto) {
     const newUser = await this.userRepository.create(userData);
     await this.userRepository.save(newUser);
     return newUser;
