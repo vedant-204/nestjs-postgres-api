@@ -8,6 +8,12 @@ import { UsersService } from '../users/users.service'
 
 @Injectable()
 export class AuthenticationService {
+  public getCookiesForLogOut() {
+    return [
+      'Authentication=;HttpOnly; Path=/; Max-Age=0',
+      'Refresh=; HttpOnly; Path=/; Max-Age=0'
+    ];
+  }
   constructor(
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
@@ -29,8 +35,7 @@ export class AuthenticationService {
       secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
       expiresIn: `${this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')}`
     })
-    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')}`;
-    return { token }
+    return `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')}`;
   }
 
   public async register(registrationData: RegisterDto) {

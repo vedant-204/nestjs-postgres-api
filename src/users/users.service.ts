@@ -22,13 +22,19 @@ export class UsersService {
   async getUserIfRefreshTokenMatches(refreshToken: string, userId: number) {
     const user = await this.getById(userId);
 
-    const isRefreshTokenMatching = await bcypt.compare(
+    const isRefreshTokenMatching = await bcrypt.compare(
       refreshToken,
       user.currentHashedRefreshToken
     );
     if (isRefreshTokenMatching) {
       return user;
     }
+  }
+
+  async removeRefreshToken(userId: number) {
+    return this.userRepository.update(userId, {
+      currentHashedRefreshToken: null
+    })
   }
 
   async getById(id: number) {
