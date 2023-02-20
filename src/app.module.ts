@@ -9,6 +9,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import * as Joi from '@hapi/joi';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter'
 import { APP_FILTER } from '@nestjs/core'
+import { SubscribersModule } from './subscribers/subscribers.module';
 
 @Module({
   imports: [PostsModule,
@@ -27,7 +28,7 @@ import { APP_FILTER } from '@nestjs/core'
         JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
         JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required()
       }),
-    }), DatabaseModule, UsersModule, AuthenticationModule],
+    }), DatabaseModule, UsersModule, AuthenticationModule, SubscribersModule],
   controllers: [AppController],
   providers: [
     AppService,
