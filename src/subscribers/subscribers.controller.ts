@@ -13,7 +13,7 @@ export class SubscribersController {
   @Get()
   @UseGuards(JwtAuthenticationGuard)
   async getSubscribers() {
-    return this.subscribersService.send({
+    return this.subscribersService.emit({
       cmd: 'get-all-subscribers'
     }, '')
   }
@@ -21,7 +21,7 @@ export class SubscribersController {
   @Post()
   @UseGuards(JwtAuthenticationGuard)
   async createPost(@Body() subscriber: CreateSubscribersDto) {
-    return this.subscribersService.send({
+    return this.subscribersService.emit({
       cmd: 'add-subscirber'
     }, subscriber)
   }
