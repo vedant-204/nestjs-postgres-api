@@ -8,18 +8,27 @@ import { SubscribersController } from './subscribers.controller';
   controllers: [SubscribersController],
   providers: [
     {
-      provide: 'SUBSCRIBERS_SERVICE',
-      useFactory: (configService: ConfigService) => (
-        ClientProxyFactory.create({
-          transport: Transport.TCP,
+      provide: 'SUBSCRIBERS_SERVICES',
+      useFactory: (configService: ConfigService) => {
+        const user = configService.get('RABBITMQ_USER');
+        const password = configService.get('RABBITMQ_PASSWORD');
+        const host = configService.get('RABBITMQ_HOST');
+        const queueName = configService.get('RABBITMQ_QUEUE_NAME');
+
+        return ClientProxyFactory.create({
+          transport: Transport.RMQ,
           options: {
-            host: configService.get('SUBSCRIBERS_SERVICE_HOST'),
-            port: configService.get('SUBSCRIBERS_SERVICE_PORT')
-          }
+            urls: [`amqp://${user}:${password}@${host}`],
+            noAck: false,
+            queue: queueName,
+            queueOptions: {
+              durable: true,
+            },
+          },
         })
-      ),
+      },
       inject: [ConfigService]
-    }
+    },
   ]
 })
 export class SubscribersModule { }
