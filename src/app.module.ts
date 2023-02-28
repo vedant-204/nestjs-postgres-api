@@ -24,9 +24,11 @@ import { SubscribersModule } from './subscribers/subscribers.module';
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION_TIME: Joi.string().required(),
         JWT_ACCESS_TOKEN_SECRET: Joi.string().required(),
-        JWT_ACCESS_TOEKN_EXPIRATION_TIME: Joi.string().required(),
+        JWT_ACCESS_TOKEN_EXPIRATION_TIME: Joi.string().required(),
         JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
-        JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required()
+        JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required(),
+        REDIS_HOST: Joi.string().required(),
+        REDIS_PORT: Joi.string().required()
       }),
     }), DatabaseModule, UsersModule, AuthenticationModule, SubscribersModule],
   controllers: [AppController],
