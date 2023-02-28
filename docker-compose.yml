@@ -1,7 +1,19 @@
 version: "3"
 services:
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=localhost:6379
+    ports:
+      - 8081:8081
+    depends_on:
+      - redis
   postgres:
-    container_name: postgres
+    container_name: postgres_main
     image: postgres:latest
     ports:
       - "5432:5432"
@@ -15,7 +27,7 @@ services:
   pgadmin:
     links:
       - postgres:postgres
-    container_name: pgadmin
+    container_name: pgadmin_main
     image: dpage/pgadmin4
     ports:
       - "8080:80"
