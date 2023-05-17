@@ -35,4 +35,9 @@ export default class PostsController {
   async deletePost(@Param('id') id: string) {
     this.postsService.deletePost(Number(id));
   }
+
+  @Get(`/hello/world`)
+  async basicGet() {
+    console.log("hello");
+  }
 }
